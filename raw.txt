@@ -1,0 +1,46 @@
+from typing import List, Tuple, Optional
+import numpy as np
+from collections import Counter
+
+class KNN:
+    def __init__(self, k: int = 3) -> None:
+        self.k: int = k
+        self.X_train: Optional[np.ndarray] = None
+        self.y_train: Optional[np.ndarray] = None
+
+    def fit(self, X: np.ndarray, y: np.ndarray) -> None:
+        self.X_train = X
+        self.y_train = y
+
+    def euclidean_distance(self, x1: np.ndarray, x2: np.ndarray) -> float:
+        return np.sqrt(np.sum((x1 - x2) ** 2))
+
+    def predict(self, X: np.ndarray) -> np.ndarray:
+        return np.array([self._predict(x) for x in X])
+
+    def _predict(self, x: np.ndarray) -> str:
+        if self.X_train is None or self.y_train is None:
+            raise ValueError("You must fit the model before making predictions.")
+
+        distances: List[float] = [self.euclidean_distance(x, x_train) for x_train in self.X_train]
+        k_indices: np.ndarray = np.argsort(distances)[:self.k]
+        k_nearest_labels: List[str] = [self.y_train[i] for i in k_indices]
+        most_common: List[Tuple[str, int]] = Counter(k_nearest_labels).most_common(1)
+        return most_common[0][0]
+
+# Example usage
+if __name__ == "__main__":
+    np.random.seed(42)
+    X_train: np.ndarray = np.random.rand(100, 2)
+    y_train: np.ndarray = np.random.choice(['A', 'B'], size=100)
+    X_test: np.ndarray = np.random.rand(20, 2)
+
+    knn: KNN = KNN(k=3)
+    knn.fit(X_train, y_train)
+    predictions: np.ndarray = knn.predict(X_test)
+
+    print("Sample predictions:", predictions)
+
+    y_test: np.ndarray = np.random.choice(['A', 'B'], size=20)
+    accuracy: float = np.mean(predictions == y_test)
+    print(f"Accuracy: {accuracy:.2f}")
