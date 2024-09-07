@@ -17,7 +17,7 @@ class PCA:
         covariance_matrix = np.cov(X_centered, rowvar=False)
 
         # Eigen decomposition
-        eigenvalues, eigenvectors = np.linalg.eig(covariance_matrix)
+        eigenvalues, eigenvectors = np.linalg.eigh(covariance_matrix)
 
         # Sort eigenvectores by eigenvalues in descending order
         idx = np.argsort(eigenvalues)[::-1]
@@ -38,14 +38,22 @@ class PCA:
         X_centered = X - self.mean
         return np.dot(X_centered, self.components)
 
+    def fit_transform(self, X):
+        self.fit(X)
+        return self.transform(X)
+
     def inverse_transform(self, X_transformed):
         if self.components is not None and self.mean is not None:
-            return np.dot(X_transformed, self.components.T) + self.mean
+            reconst = np.dot(X_transformed, self.components.T) + self.mean
+            return reconst
         else:
             raise ValueError(
                 "Components and/or mean have not been calculated. Please fit the PCA object first."
             )
 
-    def fit_transform(self, X):
-        self.fit(X)
-        return self.transform(X)
+    def explained_variance_ratio(self):
+        if self.eigenvalues is None:
+            raise ValueError(
+                "PCA has not been fitted. Call fit() before using explained_variance_ratio()."
+            )
+        return self.eigenvalues / np.sum(self.eigenvalues)
