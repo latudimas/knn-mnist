@@ -47,10 +47,6 @@ class KNNClassifier:
                 return self._manhattan_distance(x1, x2)
             case "minkowski":
                 return self._minkowski_distance(x1, x2)
-            case "chebyshev":
-                return self._chebyshev_distance(x1, x2)
-            case "cosine":
-                return self._cosine_distance(x1, x2)
             case _:
                 raise ValueError(f"Unsupported distance metric '{self.metric}'")
 
@@ -61,20 +57,10 @@ class KNNClassifier:
         diff = np.abs(x1 - x2)
         return np.sum(diff)
 
-    def _chebyshev_distance(self, x1, x2):
-        diff = np.abs(x1 - x2)
-        return np.max(diff)
-
     def _minkowski_distance(self, x1, x2):
         abs_diff = np.abs(x1 - x2)
         distance = np.sum(abs_diff**self.p) ** (1.0 / self.p)
         return distance
-
-    def _cosine_distance(self, x1, x2):
-        dot_product = np.dot(x1, x2)
-        mag_x1 = np.linalg.norm(x1)
-        mag_x2 = np.linalg.norm(x2)
-        return 1 - (dot_product / (mag_x1 * mag_x2))
 
     # def predict_proba(self, X):
     #     if self.X_train is None or self.y_train is None:
