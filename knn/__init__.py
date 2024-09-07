@@ -1,3 +1,3 @@
-from ._base import KNN
+from ._base import KNNClassifier
 
-__all__ = ["KNN"]
+__all__ = ["KNNClassifier"]
