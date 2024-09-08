@@ -57,6 +57,44 @@ class ModelUtils:
         return report
 
     @staticmethod
+    def overall_classification_metrics(y_true, y_pred):
+        labels = np.unique(y_true)
+        precisions = []
+        recalls = []
+        f1_scores = []
+
+        for label in labels:
+            true_positive = np.sum((y_true == label) & (y_pred == label))
+            false_positive = np.sum((y_true != label) & (y_pred == label))
+            false_negative = np.sum((y_true == label) & (y_pred != label))
+
+            precision = (
+                true_positive / (true_positive + false_positive)
+                if (true_positive + false_positive) > 0
+                else 0
+            )
+            recall = (
+                true_positive / (true_positive + false_negative)
+                if (true_positive + false_negative) > 0
+                else 0
+            )
+            f1 = (
+                2 * (precision * recall) / (precision + recall)
+                if (precision + recall) > 0
+                else 0
+            )
+
+            precisions.append(precision)
+            recalls.append(recall)
+            f1_scores.append(f1)
+
+        overall_precision = np.mean(precisions)
+        overall_recall = np.mean(recalls)
+        overall_f1 = np.mean(f1_scores)
+
+        return overall_precision, overall_recall, overall_f1
+
+    @staticmethod
     def cross_val_score(model, X, y, cv=5):
         n_samples = len(X)
         fold_size = n_samples // cv
