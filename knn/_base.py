@@ -62,6 +62,10 @@ class KNNClassifier:
         distance = np.sum(abs_diff**self.p) ** (1.0 / self.p)
         return distance
 
+    def score(self, X, y):
+        y_pred = self.predict(X)
+        return np.mean(y_pred == y)
+
     # def predict_proba(self, X):
     #     if self.X_train is None or self.y_train is None:
     #         raise ValueError(
@@ -100,7 +104,3 @@ class KNNClassifier:
     #         proba = [class_counts[c] / self.n_neighbors for c in classes]
     #         probas.append(proba)
     #     return np.array(probas)
-
-    def score(self, X, y):
-        y_pred = self.predict(X)
-        return np.mean(y_pred == y)
