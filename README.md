@@ -166,6 +166,8 @@ Limitations:
 ## Quick Start Guide for MNIST Classification Project
 
 ### Setup
+1. Extract `MNIST_ORG.zip` from the `data` folder.
+2. Install required Python libraries by running `pip install -r requirements.txt`
 
 #### Project Structure
 
